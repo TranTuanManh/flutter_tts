@@ -1,6 +1,7 @@
 package com.tundralabs.fluttertts
 
 import android.content.Context
+import android.media.AudioAttributes
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -485,6 +486,12 @@ class FlutterTtsPlugin : MethodCallHandler, FlutterPlugin {
     private fun setVolume(volume: Float, result: Result) {
         if (volume in (0.0f..1.0f)) {
             bundle!!.putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, volume)
+            tts!!.setAudioAttributes(AudioAttributes.Builder()
+                .setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
+                .setUsage(AudioAttributes.USAGE_ALARM)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                .build()
+            )
             result.success(1)
         } else {
             Log.d(tag, "Invalid volume $volume value - Range is from 0.0 to 1.0")
@@ -555,7 +562,12 @@ class FlutterTtsPlugin : MethodCallHandler, FlutterPlugin {
     }
 
     private fun getDefaultEngine(result: Result) {
-        val defaultEngine: String = tts!!.defaultEngine
+        var defaultEngine: String = ""
+        try {
+            defaultEngine = tts!!.defaultEngine
+        } catch (e: Exception) {
+            Log.d(tag, "getDefaultEngine: " + e.message)
+        }
         result.success(defaultEngine)
     }
 

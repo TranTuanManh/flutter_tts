@@ -487,8 +487,7 @@ class FlutterTtsPlugin : MethodCallHandler, FlutterPlugin {
         if (volume in (0.0f..1.0f)) {
             bundle!!.putFloat(TextToSpeech.Engine.KEY_PARAM_VOLUME, volume)
             tts!!.setAudioAttributes(AudioAttributes.Builder()
-                .setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
-                .setUsage(AudioAttributes.USAGE_ALARM)
+                .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
                 .build()
             )
